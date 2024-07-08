@@ -68,7 +68,7 @@ if __name__ == '__main__':
     identifier = sys.argv[1]
 
     name = DHS()
-    key = name.encrypt(input("enter a password: "))
+    key = name.encrypt(unpickledata(identifier))
     print(f"Encryption key: {key}")
     print(f"Encrypted password: {name.get(key)}")
     print(f"Decrypting password: {name.decrypt(key)}")

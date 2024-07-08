@@ -1,4 +1,6 @@
+#for unpickling stored data
 import pickle
+import sys
 # install cryptography package/lib
 from cryptography.fernet import Fernet
 import hashlib
@@ -52,9 +54,18 @@ class Pair:
         return f'{self.pair[0]}, {self.pair[1]}'
 
 
+
+def unpickledata(name):
+    with open('data.pickle_'+name, 'rb') as f:
+        info = pickle.load(f)
+        return str(info)
+
+
 if __name__ == '__main__':
+    #pulling unique data pertaining to stored information for encryption from dhsserver.py via command line
+    identifier = sys.argv[1]
     name = DHS()
-    key = name.encrypt(input("enter a password: "))
+    key = name.encrypt(unpickledata(identifier))
     print(f"Encryption key: {key}")
     print(f"Encrypted password: {name.get(key)}")
     print(f"Decrypting password: {name.decrypt(key)}")

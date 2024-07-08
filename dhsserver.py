@@ -1,6 +1,7 @@
 import socket
 import subprocess
 import pickle
+import time
 
 
 #listens for connections
@@ -10,6 +11,10 @@ def startlisten():
 
     #First level of connection secuirity, verfies requesters ip adress is authorized
     authorizedusers = ['127.0.0.1','1.0.0.1.2']
+
+    #second level of connection defense
+    global joincodes
+    joincodes = {'127.0.0.1': 'Afj3949jgj'}
 
     #binds host and port outside the loop because they are permenant and cannot be rebound
     s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
@@ -48,11 +53,27 @@ def startlisten():
             manager.close_connection()
 
         else:
-            print('unauthorized')
+            storeunauth(addr)
 
-        
+def storeunauth(adress, attemptedcode=None):
 
-            
+    #checks whether ip or code is unauthorized
+    if attemptedcode==None:   
+        print(f'unauthorized join attempt by ip: {adress}')
+        conn.sendall(b'YOU ARE NOT AUTHORIZED TO CONNECT')
+
+        #stores unathorized join attempts
+        with open('unathorized_join_attempts.txt', 'a') as f:
+            f.write(str(f'Unathorized IP: {adress} attempted to connect at {time.asctime(time.gmtime())} UTC \n'))
+
+    else:
+         print(f'attempted use of {attemptedcode} as an authorization code')
+         with open('unathorized_join_attempts.txt', 'a') as f:
+            f.write(str(f'Authorized IP: {adress} attempted to connect with the incorrect acsess code {attemptedcode} at {time.asctime(time.gmtime())} UTC \n'))
+
+
+    
+
 
 
         
@@ -70,15 +91,31 @@ class server:
             self.data = self.connection.recv(1024)
             print(f"{self.name} received: {self.data.decode()}")
             delimeter = '\n'
-        
+
+
             self.data = self.data.decode()
             global info
             self.info = self.data.split(delimeter)
-            print(self.info)
-            with open('data.pickle_'+str(self.name), 'wb') as f:
-                pickle.dump(self.info, f)
-        
-            subprocess.run(["python", "encryption.py"])
+
+
+            
+            authcode = self.info[0]
+            #checks if the joincode is correct
+            if joincodes[str(self.name)] == authcode:
+
+                
+                del self.info[0]
+                print(self.info)
+
+                with open('data.pickle_'+str(self.name), 'wb') as f:
+                    pickle.dump(self.info, f)
+            
+                subprocess.run(["python", "encryption.py"])
+
+            #if joincode is not correct then it stores ip and attempted join code
+            else:
+                storeunauth(self.name, authcode)
+                self.close_connection()
 
         except Exception as e:
             print(f"An error occurred: {e}")

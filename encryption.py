@@ -54,16 +54,19 @@ class Pair:
         return f'{self.pair[0]}, {self.pair[1]}'
 
 
-
-def unpickledata(name):
-    with open('data.pickle_'+name, 'rb') as f:
+#unpicles the information that is stored so it can be encrypted and restored
+def unpickledata(unique):
+    with open('data.pickle_'+unique, 'rb') as f:
         info = pickle.load(f)
+        
+        #returns the raw info for encryption
         return str(info)
 
 
 if __name__ == '__main__':
     #pulling unique data pertaining to stored information for encryption from dhsserver.py via command line
     identifier = sys.argv[1]
+
     name = DHS()
     key = name.encrypt(unpickledata(identifier))
     print(f"Encryption key: {key}")

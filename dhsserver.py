@@ -3,7 +3,7 @@ import subprocess
 import pickle
 import time
 from cryptography.fernet import Fernet
-
+import encryption
 
 
 #listens for connections
@@ -109,11 +109,8 @@ class server:
                 del self.info[0]
                 print(self.info)
 
-                with open('data.pickle_'+str(self.name), 'wb') as f:
-                    pickle.dump(self.info, f)
-
-                indentifier = self.name
-                subprocess.run(["python", "encryption.py", indentifier])
+                
+                encryption.encrypt(str(self.info))
 
             #if joincode is not correct then it stores ip and attempted join code
             else:

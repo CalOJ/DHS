@@ -4,6 +4,8 @@ import pickle
 import time
 from cryptography.fernet import Fernet
 import encryption
+import tokengen
+import emailsender
 
 
 #listens for connections
@@ -109,8 +111,20 @@ class server:
                 del self.info[0]
                 print(self.info)
 
+                if 'decrypt' in self.info:
+                    pass
                 
-                encryption.encrypt(str(self.info))
+                if 'card info' in self.info:
+
+                    key = encryption.encrypt(str(self.info))
+                   
+                    link = tokengen.gentoken(key)
+                    
+                    emailsender.sendmail(link)
+                   
+                    self.connection.sendall(key)
+                 
+
 
             #if joincode is not correct then it stores ip and attempted join code
             else:

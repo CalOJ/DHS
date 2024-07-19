@@ -8,7 +8,7 @@ import time
 
 
 #A working product would generate a differnt ID for each client
-messageid = '172136491989.19236.1554871168693874964@Jacobys-X13.lan'
+messageid = '172136491989745656'
 
 port = 465 
 smtp_server = "smtp.gmail.com"

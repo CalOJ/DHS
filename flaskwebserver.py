@@ -34,7 +34,7 @@ def save_key():
                 print(identify)
 
                 # Save the encryption key (for example, save to a file or database)
-                with open(f'DHS/in_use_keys/data.pickle_encryptionkey_{identify}', 'wb') as file:
+                with open(f'DHS/data.pickle_encryptionkey_{identify}', 'wb') as file:
                     pickle.dump(encryption_key, file)
                     # Log that the key has been saved
                     app.logger.debug('Encryption key saved to encryption_key.txt')

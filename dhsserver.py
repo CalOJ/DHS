@@ -2,10 +2,10 @@ import socket
 import subprocess
 import pickle
 import time
-from cryptography.fernet import Fernet
 import encryption
 import tokengen
 import emailsender
+import os
 
 
 #listens for connections
@@ -111,18 +111,56 @@ class server:
                 del self.info[0]
                 print(self.info)
 
+
+                #to decrypt
                 if 'decrypt' in self.info:
-                    pass
-                
+                    print(0)
+
+                    subprocess.run(['python', 'emailsender.py'])
+                 
+                    secondhalf = str(self.info[1])
+                    #waits until customer clicks link
+                    while True:
+                        time.sleep(3)
+                        print(1)
+                        #default file value for now but in a working version it would be variable depending on what the company sends the server
+                        if os.path.exists("encry.pickle_encryptionkey_['42453642']"):
+                            break
+
+                    with open("encry.pickle_encryptionkey_['42453642']",'rb') as f:
+                        firsthalf = pickle.load(f)
+                        print(2)
+                    os.remove("encry.pickle_encryptionkey_['42453642']")
+
+                    combined = str(firsthalf+secondhalf)
+                    combined = combined.encode()
+                    
+                    print(combined)
+
+                    decryptedinfo = encryption.decrypt(combined)
+                    print(decryptedinfo)
+
+                    self.connection.sendall(decryptedinfo)
+                    print(3)
+                    
+                        
+                        
+
+                #to encrypt
                 if 'card info' in self.info:
 
-                    key = encryption.encrypt(str(self.info))
                    
-                    link = tokengen.gentoken(key)
+                    key = encryption.encrypt(str(self.info))
+                    n = len(key)
+                    sendtoclient = key[:n//2]
+                    sendtoserver = key[n//2:]
+                     
+                   
+                    link = tokengen.gentoken(sendtoclient)
                     
                     emailsender.sendmail(link)
-                   
-                    self.connection.sendall(key)
+
+                    self.connection.sendall(sendtoserver)
                  
 
 

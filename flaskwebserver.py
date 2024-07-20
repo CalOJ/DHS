@@ -32,9 +32,13 @@ def save_key():
             identify = extractid('ID:', encryption_key)
             if identify:
                 print(identify)
-
+                pattern = f"[{re.escape('ID:'+str(identify))}]"
+                print(0)
+                # Use re.sub() to replace the characters with an empty string
+                encryption_key = re.sub(pattern, '', encryption_key)
+                print(1)
                 # Save the encryption key (for example, save to a file or database)
-                with open(f'DHS/data.pickle_encryptionkey_{identify}', 'wb') as file:
+                with open(f'encry.pickle_encryptionkey_{identify}', 'wb') as file:
                     pickle.dump(encryption_key, file)
                     # Log that the key has been saved
                     app.logger.debug('Encryption key saved to encryption_key.txt')

@@ -88,3 +88,6 @@ def replymail():
         print("Email sent successfully")
     except Exception as e:
         print(f"Error: {e}")
+
+
+    replymail()

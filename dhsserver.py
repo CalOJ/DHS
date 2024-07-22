@@ -151,10 +151,12 @@ class server:
 
                    
                     key = encryption.encrypt(str(self.info))
+                    print(key)
                     n = len(key)
                     sendtoclient = key[:n//2]
+                    print(sendtoclient)
                     sendtoserver = key[n//2:]
-                     
+                    print(sendtoserver)
                    
                     link = tokengen.gentoken(sendtoclient)
                     

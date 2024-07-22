@@ -41,7 +41,7 @@ def encrypt():
             
 def decrypt():
     datatype = (b'decrypt'+delimeter)
-    encrytionkey = (b'5ikQ3iJT3pa6JbX1fEVgs=')
+    encrytionkey = (b'MVRJIEdnj_a5wWtOyAmGA=')
 
     with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
 
@@ -66,5 +66,7 @@ def decrypt():
             print(f"An error occurred: {e}")
 
 if __name__ == '__main__':
-    #encrypt()
-    decrypt()
+    encrypt()
+    #decrypt()
+
+

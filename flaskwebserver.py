@@ -2,7 +2,7 @@ from flask import Flask, request
 import base64
 import logging
 import pickle
-import re
+
 
 app = Flask(__name__)
 
@@ -28,18 +28,19 @@ def save_key():
             
 
             #Unique identifier put at the end of token
-            
-            identify = extractid('ID:', encryption_key)
+            split = encryption_key.split('+n')
+            identify = split[1]
+            key = split[0]
             if identify:
                 print(identify)
-                pattern = f"[{re.escape('ID:'+str(identify))}]"
+                
                 print(0)
                 # Use re.sub() to replace the characters with an empty string
-                encryption_key = re.sub(pattern, '', encryption_key)
+              
                 print(1)
                 # Save the encryption key (for example, save to a file or database)
                 with open(f'encry.pickle_encryptionkey_{identify}', 'wb') as file:
-                    pickle.dump(encryption_key, file)
+                    pickle.dump(key, file)
                     # Log that the key has been saved
                     app.logger.debug('Encryption key saved to encryption_key.txt')
                     
@@ -51,10 +52,7 @@ def save_key():
         app.logger.error('No token or ID provided')
         return "No token or ID provided", 400
     
-def extractid(word,token):
-    patt = rf"{word}(\d+)"
 
-    return re.findall(patt,token)
 
 if __name__ == '__main__':
     app.run(debug=True)
